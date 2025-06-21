@@ -39,7 +39,7 @@ export default class User extends Model {
     });
   }
 
-  static associate(models) {
+  static associate(_models) {
     // Define associations here (optional)
   }
 }
