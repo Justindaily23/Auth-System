@@ -6,7 +6,7 @@ import {
     logoutAllSessionsService 
 } from '../services/auth.service.js';
 import asyncHandler from '../utils/asyncHandler.js';
-
+import { forgotPasswordService, resetPasswordService } from '../services/auth.service.js';
 
 // Register user logic
 export const registerUser = asyncHandler(async(req, res) =>{
@@ -79,3 +79,40 @@ export const logoutAllSessions = asyncHandler(async (req, res) => {
     ...result,
   });
 });
+
+/**
+ * @route POST /api/auth/forgot-password
+ * @desc Initiate password reset process by emailing a reset link
+ * @access Public
+ */
+export const forgotPassword = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+
+  // Call the forgot password service
+  const result = await forgotPasswordService(email);
+
+  return res.status(200).json({
+    success: true,
+    ...result,
+  });
+}); 
+
+
+export const resetPassword = asyncHandler(async (req, res) => {
+  const { token, newPassword } = req.body;
+
+  // Call the reset password service (not implemented in this snippet)
+  const result = await resetPasswordService(token, newPassword);
+  if (!result) {
+    return res.status(400).json({
+      success: false,
+      message: 'Password reset failed. Invalid token or password.',
+    });
+  } 
+  // Assuming resetPasswordService returns a success message or similar
+  return res.status(200).json({
+    success: true,
+    message: 'Password reset successful',
+    // ...result,
+  });
+})

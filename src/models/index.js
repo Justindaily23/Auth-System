@@ -15,25 +15,31 @@ const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.p
   logging: false,
 });
 
+// Initialize models before storing them in the db object
+ User.init(sequelize);
+ RefreshToken.initModel(sequelize);
 // Create an empty object to hold all models and Sequelize instances
-const db = {};
+const db = {
+  sequelize,
+  Sequelize,
+  User,
+  RefreshToken,};
 
 // Attach the Sequelize connection instance so it can be accessed elsewhere in the app (for querying, syncing, etc.)
-db.sequelize = sequelize;
+//db.sequelize = sequelize;
 
 // Attach the Sequelize class itself to access built-in types like Sequelize.STRING, Sequelize.INTEGER, etc.
-db.Sequelize = Sequelize;
+//db.Sequelize = Sequelize;
 
 // Register models
-db.User = User.init(sequelize);
+
 
 // Setup associations
 if (User.associate) {
   User.associate(db);
 }
+if (RefreshToken.associate) {
+  RefreshToken.associate(db);
+} 
 
-RefreshToken.initModel(sequelize);
-RefreshToken.associate(db);
-
-db.RefreshToken = RefreshToken;
 export default db;

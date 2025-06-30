@@ -1,6 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
-
 export default class User extends Model {
+  
   static init(sequelize) {
     return super.init({
       id: {
@@ -23,10 +23,23 @@ export default class User extends Model {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      passwordResetToken: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      passwordResetExpires: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
       role: {
         type: DataTypes.ENUM('user', 'moderator', 'admin'),
         defaultValue: 'user',
       },
+      auth_provider: {
+        type: DataTypes.ENUM('local', 'google'),
+        allowNull: false,
+        defaultValue: 'local',
+    },
       isVerified: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
@@ -39,7 +52,9 @@ export default class User extends Model {
     });
   }
 
-  static associate(_models) {
-    // Define associations here (optional)
-  }
+  static associate(models) {
+this.hasMany(models.RefreshToken, {
+      foreignKey: 'userId',
+      onDelete: 'CASCADE',
+    });  }
 }
